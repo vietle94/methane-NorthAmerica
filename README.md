@@ -1,0 +1,2 @@
+# methane-NorthAmerica
+Methane is the second most important anthropogenic greenhouse gas in the atmosphere. Methane concentration is increasing, and the reasons to this are being debated. Satellite observations have been considered as the key to the solution, but methane is a long-lived greenhouse gas and is transported with the winds. Therefore, methane emissions are not easy to spot from satellite observations. However, by averaging over time, regions with consistently higher concentrations – hot spots – may be distinguished
