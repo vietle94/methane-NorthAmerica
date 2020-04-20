@@ -64,6 +64,6 @@ ax.add_feature(feature.LAND, color='lightgrey')
 ax.add_feature(feature.STATES, lw=0.5)
 cbar = plt.colorbar(im, ax=ax, orientation='horizontal', fraction=0.075)
 cbar.set_label(label)   
-plt.savefig('tropomi_deGouw.png', dpi=150, bbox_inches='tight')
+plt.savefig('Figures/tropomi_deGouw.png', dpi=150, bbox_inches='tight')
 plt.show()
 

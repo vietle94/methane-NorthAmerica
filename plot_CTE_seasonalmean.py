@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 
 
 
-def plot_seasonal_averages(ds, levels, cmap, label, figsize):
+def plot_seasonal_averages(ds, levels, cmap, label, figsize, projection):
     plt.figure(figsize=figsize)
     for i, season in enumerate(ds.season):
         # choose the axis
@@ -66,7 +66,7 @@ ds = ds.rename({'time':'season'})
 projection = ccrs.PlateCarree(central_longitude = 0.0)
 cmap = plt.get_cmap('jet')
 figsize = (14,10)
-plot_seasonal_averages(ds, levels, cmap, label, figsize)
+plot_seasonal_averages(ds, levels, cmap, label, figsize, projection)
 # save image
-plt.savefig(f'{file}_3month_average.png', dpi=150, bbox_inches='tight')
+plt.savefig(f'Figures/{file}_3month_average.png', dpi=150, bbox_inches='tight')
 plt.show()
