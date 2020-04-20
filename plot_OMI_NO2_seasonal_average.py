@@ -12,7 +12,7 @@ import matplotlib.image as mpimg
 import numpy as np
 
 fig_list_NO2 = sorted(glob('Figures/GIOVANNI-NO2*.png'))
-fig_list_CH4 = sorted(glob('Figures/stropomi_3month_average_20*.png'))
+fig_list_CH4 = sorted(glob('Figures/tropomi_3month_average_20*.png'))
 
 figsize = (20,10)
 for ind,fig_name in enumerate(fig_list_NO2):

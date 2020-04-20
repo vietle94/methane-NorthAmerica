@@ -51,7 +51,7 @@ def plot_seasonal_average(xch4, ax, levels, cmap, label):
     ax.add_feature(feature.LAND, color='lightgrey')
     ax.add_feature(feature.STATES, lw=0.5)
     
-    start_date = datetime.strftime(pd.Timestamp(xch4_seasonal_average[var].sel(time=season).time.values),
+    start_date = datetime.strftime(pd.Timestamp(xch4.time.values),
                                    '%Y-%m-%d')
     end_date = datetime.strftime(pd.Timestamp(start_date)+relativedelta(months=+3)-pd.Timedelta('1 day'),
                                  '%Y-%m-%d')
