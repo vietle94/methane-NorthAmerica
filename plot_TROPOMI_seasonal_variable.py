@@ -72,16 +72,16 @@ def basemap(ax, extent, base):
     ax.set_xlabel('Longitude')
     
 
-def plot_seasonal_variable(xch4, ax, levels, cmap, label, title):
+def plot_seasonal_variable(xch4, ax, levels, cmap, label, title,
+                           start, end):
     im = xch4.plot(x='lon', y='lat',
                     transform=ccrs.PlateCarree(),
                     ax=ax, levels=levels,
                     cmap=cmap, add_colorbar=False)
     
-    start_date = datetime.strftime(pd.Timestamp(xch4.time.values),
-                                    '%Y-%m-%d')
-    end_date = datetime.strftime(pd.Timestamp(start_date)+relativedelta(months=+3)-pd.Timedelta('1 day'),
-                                  '%Y-%m-%d')
+    start_date = datetime.strftime(start, '%Y-%m-%d')
+
+    end_date = datetime.strftime(end, '%Y-%m-%d')
     ax.set_title(f'{title} {start_date} - {end_date}')
     
     return im
@@ -100,84 +100,86 @@ title = 'Time average'
 levels = np.arange(1820,1900.1,0.1)
 
 regions = ['usa', 'permianbasin', 'uintahbasin']
-region = regions[2]
-# extent = [min lon, max lon, min lat, max lat]
-if region=='usa':
-    extent = [-130, -60, 20, 50]
-    base = 10
-elif region=='permianbasin':
-    extent = [-106.5, -99.5, 28.5, 34.5]
-    base = 1
-elif region=='uintahbasin':
-    extent = [-112,-107, 37.5,41]
-    base = 1
-else:
-    raise Exception('!!! Region should be \'usa\', \'permianbasin\' or \'uintahbasin\' !!!')
-
-
-# var = 'number_of_observations_qa_surf_albedo_filtered'
-# label = 'Number of observations'
-# title = 'Number of observations'
-# levels = np.arange(0,120.1,0.1)
-
-# start_dates = pd.date_range(start='2017-12', end='2019-07', freq='3MS')
-# end_dates = pd.date_range(start='2018-02', end='2019-09', freq='3M')
-
-start_dates = pd.date_range(start='2018-01', end='2018-07', freq='YS')
-end_dates = pd.date_range(start='2018-12', end='2019-09', freq='Y')
-
-seasonal_vars = []
-for ind, timerange_start in enumerate(start_dates):
-    timerange = pd.date_range(start=timerange_start,
-                              end=end_dates[ind],
-                              freq='1D')
-    xch4 = open_data_season(timerange, region)
-    if var.split('_')[0]=='number':
-        seasonal_var = calculate_sum_over_time(xch4) 
-    else:
-        seasonal_var = calculate_timeaverage(xch4)
-
-    seasonal_vars.append(seasonal_var)
-
-    
-xch4_seasonal_var = xr.concat(seasonal_vars, dim='time')
-xch4_seasonal_var
-xch4_seasonal_var['time'] = start_dates
-
-projection = ccrs.PlateCarree(central_longitude = 0.0)
-
-# colors1 = plt.cm.Blues_r(np.linspace(0., 0.95, 128))
-# colors2 = plt.cm.hot_r(np.linspace(0., 0.9, 150))
-# colors = np.vstack((colors1, colors2))
-# cmap = mcolors.LinearSegmentedColormap.from_list('my_colormap', colors)
-cmap = plt.get_cmap('jet')
-
-# figsize = (20,18)
-# plt.figure(figsize=figsize)
-for ind,season in enumerate(xch4_seasonal_var.time):
+# region = regions[0]
+for region in regions:
+    # extent = [min lon, max lon, min lat, max lat]
     if region=='usa':
-        figsize = (14,4)
+        extent = [-130, -60, 20, 50]
+        base = 10
+    elif region=='permianbasin':
+        extent = [-106.5, -99.5, 28.5, 34.5]
+        base = 1
+    elif region=='uintahbasin':
+        extent = [-112,-107, 37.5,41]
+        base = 1
     else:
-        figsize = (12,5)
-    plt.figure(figsize=figsize)
-    # ax = plt.subplot(np.ceil(len(xch4_seasonal_average.time)/2), 2, ind+1, 
-    #                  projection=projection)
-    ax = plt.axes(projection=projection)
-    im = plot_seasonal_variable(xch4_seasonal_var[var].sel(time=season), ax, 
-                                levels, cmap, label, title)
-    basemap(ax, extent, base)
-    # if ind==len(xch4_seasonal_average.time)-1:
-    #     cbar = plt.colorbar(im, ax=ax, orientation='vertical', fraction=0.075)
-    #     cbar.set_label(label)   
-
-    cbar = plt.colorbar(im, ax=ax)
-    cbar.set_label(label)   
+        raise Exception('!!! Region should be \'usa\', \'permianbasin\' or \'uintahbasin\' !!!')
     
-    start_date = datetime.strftime(start_dates[ind], '%Y%m%d')
-    end_date = datetime.strftime(end_dates[ind], '%Y%m%d')
-    if var.split('_')[0]=='number':
-        plt.savefig(f'Figures/tropomi_3month_numberofobs_{start_date}_{end_date}_{region}.png', dpi=150, bbox_inches='tight')
-    else:
-        plt.savefig(f'Figures/tropomi_3month_average_{start_date}_{end_date}_{region}.png', dpi=150, bbox_inches='tight')
-
-    plt.show()
+    
+    # var = 'number_of_observations_qa_surf_albedo_filtered'
+    # label = 'Number of observations'
+    # title = 'Number of observations'
+    # levels = np.arange(0,120.1,0.1)
+    
+    # start_dates = pd.date_range(start='2017-12', end='2019-07', freq='3MS')
+    # end_dates = pd.date_range(start='2018-02', end='2019-09', freq='3M')
+    
+    start_dates = pd.date_range(start='2018-01', end='2018-12', freq='YS')
+    end_dates = pd.date_range(start='2018-12', end='2019-01', freq='Y')
+    
+    seasonal_vars = []
+    for ind, timerange_start in enumerate(start_dates):
+        timerange = pd.date_range(start=timerange_start,
+                                  end=end_dates[ind],
+                                  freq='1D')
+        xch4 = open_data_season(timerange, region)
+        if var.split('_')[0]=='number':
+            seasonal_var = calculate_sum_over_time(xch4) 
+        else:
+            seasonal_var = calculate_timeaverage(xch4)
+    
+        seasonal_vars.append(seasonal_var)
+    
+        
+    xch4_seasonal_var = xr.concat(seasonal_vars, dim='time')
+    xch4_seasonal_var
+    xch4_seasonal_var['time'] = start_dates
+    
+    projection = ccrs.PlateCarree(central_longitude = 0.0)
+    
+    # colors1 = plt.cm.Blues_r(np.linspace(0., 0.95, 128))
+    # colors2 = plt.cm.hot_r(np.linspace(0., 0.9, 150))
+    # colors = np.vstack((colors1, colors2))
+    # cmap = mcolors.LinearSegmentedColormap.from_list('my_colormap', colors)
+    cmap = plt.get_cmap('jet')
+    
+    # figsize = (20,18)
+    # plt.figure(figsize=figsize)
+    for ind,season in enumerate(xch4_seasonal_var.time):
+        if region=='usa':
+            figsize = (14,4)
+        else:
+            figsize = (12,5)
+        plt.figure(figsize=figsize)
+        # ax = plt.subplot(np.ceil(len(xch4_seasonal_average.time)/2), 2, ind+1, 
+        #                  projection=projection)
+        ax = plt.axes(projection=projection)
+        im = plot_seasonal_variable(xch4_seasonal_var[var].sel(time=season), ax, 
+                                    levels, cmap, label, title,
+                                    start_dates[ind], end_dates[ind])
+        basemap(ax, extent, base)
+        # if ind==len(xch4_seasonal_average.time)-1:
+        #     cbar = plt.colorbar(im, ax=ax, orientation='vertical', fraction=0.075)
+        #     cbar.set_label(label)   
+    
+        cbar = plt.colorbar(im, ax=ax)
+        cbar.set_label(label)   
+        
+        start_date = datetime.strftime(start_dates[ind], '%Y%m%d')
+        end_date = datetime.strftime(end_dates[ind], '%Y%m%d')
+        if var.split('_')[0]=='number':
+            plt.savefig(f'Figures/tropomi_3month_numberofobs_{start_date}_{end_date}_{region}.png', dpi=150, bbox_inches='tight')
+        else:
+            plt.savefig(f'Figures/tropomi_3month_average_{start_date}_{end_date}_{region}.png', dpi=150, bbox_inches='tight')
+    
+        plt.show()
