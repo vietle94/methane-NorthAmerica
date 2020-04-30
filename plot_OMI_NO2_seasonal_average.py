@@ -30,5 +30,5 @@ for ind,fig_name in enumerate(fig_list_NO2):
         
     start = fig_name.split('_')[1]
     end = fig_name.split('_')[2]
-    plt.savefig(f'Figures/XCH4_NO2_3month_average_{end}_{start}.png', dpi=150, bbox_inches='tight')
+    plt.savefig(f'Figures/XCH4_NO2_3month_average_{start}_{end}.png', dpi=150, bbox_inches='tight')
     plt.show()
