@@ -97,10 +97,10 @@ var = 'xch4_biascorrected_qa_surf_albedo_filtered'
 # var = 'xch4_biascorrected_qa_filtered'
 label = r'CH$_4$ Column Average Mixing Ratio [ppb]'
 title = 'Time average'
-levels = np.arange(1820,1900.1,0.1)
+levels = np.arange(1820,1871.1,0.1)
 
 regions = ['usa', 'permianbasin', 'uintahbasin']
-# region = regions[0]
+# regions = [regions[1]]
 for region in regions:
     # extent = [min lon, max lon, min lat, max lat]
     if region=='usa':
@@ -110,7 +110,7 @@ for region in regions:
         extent = [-106.5, -99.5, 28.5, 34.5]
         base = 1
     elif region=='uintahbasin':
-        extent = [-112,-107, 37.5,41]
+        extent = [-113,-106, 36, 42]
         base = 1
     else:
         raise Exception('!!! Region should be \'usa\', \'permianbasin\' or \'uintahbasin\' !!!')
